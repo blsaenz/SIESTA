@@ -1,0 +1,86 @@
+! Melt pond height - Notz 2009 using Darcy's Law
+! ----------------------------------------------------------------------
+! z(t+1) = z(t)exp(g*d*perm/(µh)
+! where
+! z = pond height (m)
+! g = gravity (m/s^2)
+! d = liquid density (kg/m^3)
+! perm = minimum ice permeability
+! µ = fluid viscosity = 1.79  (kg/m/s)
+! h = ice thickness (m)
+
+! viscosity of seawater (sal=35ppt) equation: visc = 0.0015*T^2 - 0.0608*T + 1.8284 m^2/s*10e6
+
+
+!Mix pelt pond water with brine in uppermost layers that are above bv_conv
+
+          !if (ice(sc,ic,mi)%bv(1) .gt. bv_conv .and. ice(sc,ic,mi)%pond%th .gt. 0.) then
+           if (ice(sc,ic,mi)%pond%th .gt. 0.) then
+
+#include "sia2_env_pond_percolate3.inc.f90"
+
+              bv_total = 0.d0
+              jj = 1
+              jjj = 0
+              keep_growing = .true.
+
+              ! find total convecting brine volume
+              do while (keep_growing)
+                  if (ice(sc,ic,mi)%bv(jj) .lt. vb_crit) then
+                      jjj = 1
+                      keep_growing = .false.
+                  elseif (ice(sc,ic,mi)%id(jj-1) .gt. ice(sc,ic,mi)%fbh) then
+                      keep_growing = .false.
+                  else
+                      bv_mean = ice(sc,ic,mi)%th(jj)*ice(sc,ic,mi)%bv(jj)*c_001
+                      bv_total = bv_total + bv_mean
+                      jj = jj+1
+                  endif
+              enddo
+
+              if (bv_total .gt. 0.d0) then
+
+                  ! save tracer changes for layers convecting with melt layer
+                  do ii=1,jj-1
+                      bv_mean = ice(sc,ic,mi)%bv(ii)*c_001
+                      tmp1 = bv_mean/bv_total ! percentage of pond that drains through current layer
+                      tmp2 = bv_mean*ice(sc,ic,mi)%th(ii)
+                      dz = tmp1*ice(sc,ic,mi)%pond%th ! amount of pond that drains through this layer
+
+                      ! check to see if entire layer is flushed
+                      dz = min(dz,tmp2)
+
+                      ! mix salt and tracers with dbvdt of pond
+                      dsdt(ii) = dsdt(ii) + bv_mean*((dz*ice(sc,ic,mi)%pond%s - &
+                          ice(sc,ic,mi)%bs(ii)*(tmp2-dz))/tmp2) - ice(sc,ic,mi)%s(ii)
+                      dpoc(ii) = dpoc(ii) + (dz*ice(sc,ic,mi)%pond%poc + &
+                          ice(sc,ic,mi)%poc(ii)*(tmp2-dz))/tmp2 - ice(sc,ic,mi)%poc(ii)
+                      dno3(ii) = dno3(ii) + (dz*ice(sc,ic,mi)%pond%no3 + &
+                          ice(sc,ic,mi)%no3(ii)*(tmp2-dz))/tmp2 - ice(sc,ic,mi)%no3(ii)
+                      dnh4(ii) = dnh4(ii) + (dz*ice(sc,ic,mi)%pond%nh4 + &
+                          ice(sc,ic,mi)%nh4(ii)*(tmp2-dz))/tmp2 - ice(sc,ic,mi)%nh4(ii)
+                      dpo4(ii) = dpo4(ii) + (dz*ice(sc,ic,mi)%pond%po4 + &
+                          ice(sc,ic,mi)%po4(ii)*(tmp2-dz))/tmp2 - ice(sc,ic,mi)%po4(ii)
+                      dsioh4(ii) = dsioh4(ii) + (dz*ice(sc,ic,mi)%pond%sioh4 + &
+                          ice(sc,ic,mi)%sioh4(ii)*(tmp2-dz))/tmp2 - ice(sc,ic,mi)%sioh4(ii)
+                  enddo
+
+              endif
+
+              ! set pond to drain - assuming draining instantly if vb_open to freeboard
+!              if (jjj .eq. 0 .or. ice(sc,ic,mi)%snow%z .eq. 0) then
+
+                  ! save for update if heat integration is valid
+                  th_pond_new = 0.
+                  s_pond_new = 0.
+                  h_pond_new = 0.
+                  poc_pond_new = 0.
+                  no3_pond_new = 0.
+                  nh4_pond_new = 0.
+                  po4_pond_new = 0.
+                  sioh4_pond_new = 0.
+
+!              endif
+
+          endif
+

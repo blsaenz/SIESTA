@@ -1,0 +1,172 @@
+0           restart -       1) use restart files to resume simulation 2) start new simulation
+0           stn_only -      only compute stations, ignoring model domain (mdh1,mdv1, etc.) below
+1           adv_on -        advect ice according to ice motion product
+0           use_gpu  -      perform delta-eddington light calculations using GPU card
+24.         write_f -       write frequency (hours)
+1           write_disk -    actually write to disk - may not want to if debugging (1=yes, 0=no)
+1           wr_stations -   write out station netcdf files - costly disk access, maybe want to supress
+7           desal -         desalination type (0 = normal, 1 = with brine replacement, 2 = dtt brine flux)
+200.        bv_conv -       critical brine volume at which desal switches from direct convection to relative conv.
+1           dhdt_desal -    1 = allow desal to be calculated using the bottom dhdt equations. 0 = cox/weeks only
+3           mix_each -      4 = desal each layer independently (don't mix bv_conv layers), 3 = denstity heat, individual layers, 2 = don't mix, put sw above brine, 1 = mix, put sw above mixed, 0 = mix bv_conv layers
+1           conv_flux -     1 = trasfer heat to convecting brine, 0 = no extra heat
+1.          dbvdt_scale -   scaling factor for desal dilution
+1           hemi -          hemisphere - 0 = Southern/Antarctic, 1 = Northern, Arctic
+342         mdh1 -          model domain - horizontal upper left (RossSeaBox = 372/744, Full = 202/404)  400  300
+281         mdv1 -          model domain - vertical upper left (RossSeaBox = 424/848, Full = 194/388)  260 280
+342         mdh2 -          model domain - horizontal lower right (RossSeaBox = 374/748, Full = 517/1035)
+281         mdv2 -          model domain - vertical lower right (RossSeaBox = 426/752, Full = 525/1051)
+2           atm_f -         atmospheric forcing source (0=NCEP,1=ECMWF,2=ECMWF_int)
+1           atmo -          atmospheric boundary calculation type (1=CICE, 0=untersteiner old/kottmeier 2003)
+0           woa -           toggle for use of specified forcing (0) or world ocean atlas forcing (1)
+2           ohf -           ocean heat flux is specificied (0) or derived from world ocean atlas (1)
+0           use_sose -      toggle for use of SOSE output for ocean fields
+1           sose_level -    SOSE level for sea surface temp and salinity (1-10)
+1           boundary_file -    toggle for modeling with (1) boundary.nc extra forcing file, (0) or specified model domain
+0           monte_carlo -   toggle for running purmutations of boundary_file forcing based on modified snowfall,temperature
+0           override_ic -   override the built-in dependence on satellite ice conectration, assuming ice the whole run
+1           icecon_mod -    modify satellite ice concentration (0=no modification, 1=90%->100%, 2=80%->100%)
+2           grid_model -    determines how vertical ice grid is constructed (0 = equally spaced grid, 1 = higher resolution at top/bottom, 2 = variable number of layers)
+1           snow_model -    snow model type
+0           snow_ridging -  1=conserve snow mass during ridging,0=don't ridge up snow (w/ mass loss)
+1           alg_dtt -       algal model calculation frequency (0=once per time step, 1=same frequency as sub-dt ice physics)
+0           use_ponds -     1=don't disappear surface melted ice, 0=melted ice/snow dissappears
+0           use_drain -     1=drain surface ice if above bv_conv and turn into snow, 0=don't
+0.5         hbd_f -         horizontal brine drainage fraction - fraction of surface melt that drains away above ice, and not thorugh ice
+0.05        init_ice_th -   0. = use satellite-based ice function for initial ice thickness, other positive number = force init ice thickness to this number (m)
+5           init_ice_type - 0 = use satellite-based ice function for inital ice sal profile, 1 = use 1st-year ice profile, 2 = use multi-year ice profile
+0.          init_snow_th -  0. = use satellite-based snow initial snow thickness, other positive number = force init snow thickness to this number (m)
+1           iit -           initial ice temp (0 = use linear gradient w/ airtemp as inital ice temp, 1 = use water temp)
+0           iis -           initial ice salinity (0 = use s_cont constant salinity 1 = use standard 1st year ice "C" curve, 2 = multiyear ice curve, 3=norwegian multi-year)
+5           iin -           initial ice nutrients (0 = full nutrients upon ice creation, 1 = linear depleted nutrients, 2=very little nutrients, 4=seawater nutrients in brine, 5=norwegian multi-year)
+0.          iif -           initial snow flooding (m) - used only in boundary_file mode
+18.         s_const -       salinity constant to use if iis paramater is set to 0
+0.3         n_f -           nutrient fraction - used to scale inital forcing nutirent concentrations if iin set to 2
+0.          ohf_skew -      ocean heat flux skew.  This number of added to the ocean heat flux (but it is always kept above 0)
+0.          at_skew -       air temperature flux skew.  This number of added to the air temp
+0.          snow_skew -     snow depth skew - fractional snow depth/precipitation multiplier (0.5 = 50% increase)
+2           alg_mig -       algae migration (0=algae stay put verticaly, 1=algae move with their respective layers while ice grows, 2=lavoie et al. style partial movement)
+31          bins -          num of wavelength bins
+1.          dt -            length of time step (hours)
+0.2         dt_sub_1 -      fraction of main timestep for ice physics - normal is 0.05
+0.05        dt_sub_2 -      fraction of main timestep for fast-changing ice physics - normal is 0.005
+0.05        dt_sub_3 -      fraction of main timestep for very-fast-changing ice physics
+0.5         dt_sub_1_tol -  minimum temperature tolerance for use of dt_sub_1 (deg C)
+1.3         dt_sub_2_tol -  minimum temperature tolerance for use of dt_sub_2 (dec C)
+18.         Ek_max -        Spectral photoaclimation parameter (microEin*m-2*s-1)
+1.4         A -             parameter of light utilization equation (dimensionless)
+0.12        B -             parameter of light utilization equation (dimensionless)
+113         begin_j_day -   start date (decimal julian day)
+2015        begin_year -    start year
+158         end_j_day -     end date (decimal julian day)
+2015        end_year -      end year
+0.01        xp -            phytoplankton death/grazing rate (1/day)
+0.03        remin -         rate of poc/detritus remineralization (1/day)
+1.00        remin_f -       fraction poc remineralization to available N,P
+35.         c_chl -         Carbon:Chlorophyl ratio (grams/gram)
+7.          c_n -           Carbon:Nitrogen Ratio (moles/mole)
+4.          c_si -          Carbon:Silicon Ratio (moles/mole)
+106.        c_p -           Carbon:Phosphorus Ratio (moles/mole)
+1.          Ks_NH4 -        Half-saturation rate constant (microMolar)
+1.          Ks_NO3 -        Half-saturation rate constant (microMolar)
+1.          Ks_SiO4 -       Half-saturation rate constant (microMolar)
+0.1         Ks_PO4 -        Half-saturation rate constant (microMolar)
+7.          Fw -           Oceanic heat flux from water (W/m^2) (1.195 cal/m^2/sec * 4.1868 W*s/cal = 5 W/m^2 in Arrigo, others?)
+34.1        Sw -            salinity of seawater (psu) - normal = 34.95 (33.33)
+1027693.    Sd -            density of seawater  (g/m^3)
+918000.     IceD -          density of pure ice (g/m^3)
+0.0631      rg -            growth rate constant rg (1/degC) - from Epply et al 1972
+0.81        G0 -            growth rate @ zero dec C (1/day) - from Epply at al 1972
+2           z_sk -          number of layers in skeletal layer
+0.001       sk_th_min -     minimum height of individual skeletal layer
+0.01        sk_th_max -     maximum height of individual skeletal layer
+3           z_int_min -     MUST BE AN EVEN NUMBER - defines minimum number of model layers
+0.01        z_th_min -      minimum height of individual layer
+0.3937376   z_th_max -      maximum height of individual layer
+0.01        z_th_crit -     critical height of individual layer, below which a smaller physics timestep mut be used (m)
+0.6         max_snow_h -    maximum height of snow over sea ice (m) - used b/c performance of snow data degrades above 60cm
+-1.8        Tw -            seawater temperature (degC)
+0.33        ksnow -         standard snow conductivity (W/m/K) (somewhere i found = 0.0741Cal/m/s/degC)
+-12.        f_limit  -      delta_T * wind_speed limit, above which no ice grows in model (Km/s)
+0.5         f_sk -          fraction of skeletal layer open to convection
+0.0511      fb -            fraction of brine tube layer that is brine tubes
+0.50        fi -            minimum fractional sea ice coverage neccessary for model use
+0.0         sw_NH4 -        seawater NH4 concentration, used if climatologies not used (然olar) - 0.0
+8.          sw_NO3 -        seawater N03 concentration, used if climatologies not used (然olar) - 31.
+10.         sw_SiO4 -       seawater SiO2 concentration, used if climatologies not used (然olar) - 80.
+1.0         sw_PO4 -        seawater PO4 concentration, used if climatologies not used (然olar) - 2.1
+0.          sw_poc -        seawater detritus concentration (g/m^3)
+50.         vb_crit -       brine volume above which gravity drainage occurs (ppt)
+95000.      vb_max -      brine volume above which layer thickness will be reduced/melted (ppt)
+1.7361e-5   conv_max -      maximum convective flux for use in desalination (cm^3/cm^2/s)
+0.005       dhdt_i -        interval for ice growth calculation (hours)
+6           ncep_f -        ncep/doe II forcing frequency (6 = every 6 hours, 24 = daily)
+3.5         min_alg -       minimum microalgal concentration (mgC/m^3)
+3.5         alg_wc -        water column algal concentration - used when freezing/flooding/creating new ice (mgC/m^3)
+0.1         min_sal -       minimum bulk ice salinity (ppt)
+0.005       nr_tol -        Newton-Raphson method tolerance for surface temp (T0)
+100         max_it -        Newton-Raphson maximum iterations
+0.98        alb_s_dry -     standard albedo dry snow (%)
+0.88        alb_s_wet -     standard albedo wet snow (%)
+0.58        alb_i_dry -     standard albedo of sea ice (%)
+0.508       alb_i_wet -     standard albedo of sea ice (%)
+0.35        den_s_dry -     density dry snow (g/cm^3)
+0.35        den_s_wet -     density wet snow (g/cm^3)
+-2.         den_s_switch -  temperature above which wet snow falls, below which dry snow falls
+0.97        eps_snow -      long wave emissivity of snow (%)
+0.99        eps_ice -       long wave emissivity of ice (%)
+1.5         alg_mig_crit -  maximum growth rate under which algae maintain position (cm/day)
+0.075       gl_max_f -      fraction of minimum layer height that is the trigger for boundary adjustment
+0.075       fl_max_f -      fraction of minimum layer height that is the trigger for boundary adjustment for surface flooding
+-75.        T_ref -         temp from which all heat intergrals are calculated (degC) (hopefully the lower than the lowest ice temp)
+0.0000001   temp_tol -      temp difference tolerance for heat methods - if the difference in temp get smaller than this, take corrective action
+0           pr_on -         on/off toggle for causing precipitation to go directly into snow ice formation, if appropriate
+0.03        bb_f -          bubble fraction in sea ice - causes density to be decreased by this amount
+-0.02       fl_crit -       minimum freeboard required to flood ice surface (m)
+0.5         fl_ratio -      ratio of ice/water in flooded snow
+3           woa_depth -     level of World Ocean Altas data to use as forcing (1=surface,2=10m,3=20m,4=30m,5=50m,6=75m,7=100m)
+0.02        h_snowpatch -   contant that determines the bare ice/snow covered ice ratio for a given snowdepth
+2.0         par_to_swd -    energy conversion factor between PAR (400-700nm) irradiance to total shortwave downward irradiance (250-4000nm) (energy/energy units) - 2.034 calc clear sky
+7.18        a_ice_ir -      weighted-mean ice absorption coefficient for near-IR (700-4000nm)
+0.4         da_f -          distribution adjustment factor - effectively changes the s.d. of the log-normal distribution - value between 1 and 0
+0.01        snow_min -      minimum modeled snow depth (m) - below this value, the model assumes no snow for thermodynamic/light/albedo putposes
+0           gc_offset -     offset in hours for indexing gc_par_ice file (240*24=5760 for arrigo 1982 sim)
+0           par_cf -        use climatology could fraction to correct par (0=off (cf already included in par), 1=yes)
+1           use_mdiff -     use molecular diffusion to supply nutrients to ice bottom (0=off 1=on)
+0           ts_is_at -      short-circuit atmospheric heat transfer by fixing surface temp to air temp (0=off 1=on)
+0           kevin_light -   use Kevin's light model instead of gregg&carder 1990 (0=off 1=on)
+0           use_pl -        use a platelet layer - only works if validaiton is on (0=off 1=on)
+1.0         snow_fudge -    snow depth fudge factor for multiplicatively adjusting the snow depth for light purposes
+160.        r_s_dry -       scattering coefficient (1/m) for dry snow
+160.        r_s_wet -       scattering coefficient (1/m) for wet snow
+160.        r_i_23 -        scattering coefficient (1/m) for very cold ice
+0.          r_i_8 -         scattering coefficient (1/m) for cold ice (zero if not used)
+0.          min_scat -      minimum scattering coefficient (1/m)
+2           rs_switch -     basis for determining snow scattering (0 = airtemp>0, 1 = layer_temp>-1, 2 = melt variable)
+0.3         a_factor -      wavelength independent snow absorption for delta eddington light routine
+0           use_expt -      1=perform exp lookup table approximation,0=system exp()
+20000       exp_bins -      number of exp lookup table bins
+-20.        exp_a_min -     minimum exponential function argument
+0           no_flooding -   prevents flooding if non-zero
+0           flood_brine -   (1) pushed brine upward or (2) floods directly with seawater
+1.          p_factor -      ice strength scalar, used to compare ice strength to ice momentum during advection refinement
+24.         snow_rd_lim -   number that determines when snow depth distribution is re-distributed
+0.0         cv_void_f -     convergence void fraction
+0.6         cvf_switch -   ice height below which cv_void_f is affected by cvf_thin (m)
+0.0         cvf_thin - multiplier of cv_void_f when ice is less than cvf_switch (fraction)
+1           snow_in_gaps - determines whether snow is inserted into ridging gaps, or just seawater
+
+grid sizes
+==========
+SSM/I & AMSR/E 25km south polar grid = 316 horiz. x 332 vert.
+AMSR/E 12.5km south polar grid = 632 horiz. x 664 vert.
+
+not used
+========
+salinity limiting coeffs from 1d model?
+0.011           a1 -        salinity limiting poly coefficient 1 (dimensionless)
+0.0312          a2 -        salinity limiting poly coefficient 2 (dimensionless)
+0.0010341       a3 -        salinity limiting poly coefficient 3 (dimensionless)
+0.000046033     a4 -        salinity limiting poly coefficient 4 (dimensionless)
+0.0000004926    a5 -        salinity limiting poly coefficient 5 (dimensionless)
+0.000000001659  a6 -        salinity limiting poly coefficient 6 (dimensionless)

@@ -1,0 +1,26 @@
+1
+  342
+  281
+
+8     - n_station - number of station coording to read below
+  272  281  420  373  300  400  282  262 - stations_mdh (horizontal ease grid values - 5 spaces per integer number)
+  289  306  285  425  280  260  389  320 - stations_mdv (vertical ease grid values - 5 spaces per integer number)
+
+
+  310  340  360  410  440  455  460  475  465  455  425  385  325  300  280  260  270  280  310  272  281  420  348  373  300  400
+  325  280  260  270  280  300  330  360  400  425  445  445  415  410  360  325  295  290  310  289  306  285  274  425  280  260 
+
+
+  272  281  420  348  373  300  400 - stations_mdh (horizontal ease grid values - 5 spaces per integer number)
+  289  306  285  274  425  280  260 - stations_mdv (vertical ease grid values - 5 spaces per integer number)
+
+
+standard stations:
+  373  300,281  400
+  425  280,306  260
+ Ross  Wedd     Indi
+  
+crazy stations
+  310  340  360  410  440  455  460  475  465  455  425  385  325  300  280  260  270  280  310
+  325  280  260  270  280  300  330  360  400  425  445  445  415  410  360  325  295  290  310   
+    
